@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BubbleSort {
+public class HeapSort {
 
     private String filePath;
     private List<String> logger;
     private Runtime runtime = Runtime.getRuntime();
 
-    public BubbleSort(String filePath) {
+    public HeapSort(String filePath) {
         this.filePath = filePath;
         logger = new ArrayList<>();
     }
@@ -33,25 +33,47 @@ public class BubbleSort {
         return tmp.stream().mapToInt(i -> i).toArray();
     }
 
-    private long bubbleSort(int[] num) {
-        int size = num.length;
-        long iterations = 0;
-        for (int i = 0; i < (size - 1); i++) {
-            iterations++;
-            boolean swapped = false;
-            for (int j = 0; j < (size - i - 1); j++) {
-                iterations++;
-                if (num[j] > num[j + 1]) {
-                    int temp = num[j];
-                    num[j] = num[j + 1];
-                    num[j + 1] = temp;
+    private void heapify(int a[], int n, int i) {
+        int largest = i; // Initialize largest as root
+        int left = 2 * i + 1; // left child
+        int right = 2 * i + 2; // right child
+        // If left child is larger than root
+        if (left < n && a[left] > a[largest])
+            largest = left;
+        // If right child is larger than root
+        if (right < n && a[right] > a[largest])
+            largest = right;
+        // If root is not largest
+        if (largest != i) {
+            // swap a[i] with a[largest]
+            int temp = a[i];
+            a[i] = a[largest];
+            a[largest] = temp;
 
-                    swapped = true;
-                }
-            }
-            if (!swapped)
-                break;
+            heapify(a, n, largest);
         }
+    }
+
+    /* Function to implement the heap sort */
+    private long heapSort(int a[]) {
+        int iterations = 0;
+        for (int i = a.length / 2 - 1; i >= 0; i--) {
+            heapify(a, a.length, i);
+            iterations++;
+        }
+
+        // One by one extract an element from heap
+        for (int i = a.length - 1; i >= 0; i--) {
+            /* Move current root element to end */
+            // swap a[0] with a[i]
+            int temp = a[0];
+            a[0] = a[i];
+            a[i] = temp;
+
+            heapify(a, i, 0);
+            iterations++;
+        }
+
         return iterations;
     }
 
@@ -71,14 +93,14 @@ public class BubbleSort {
         logger.add("Memory usage before reading input file: " + usedMemoryBefore);
         logger.add("Memory usage after reading input file: " + usedMemoryAfter);
 
-        System.out.println("file reading done, bubble sort starts");
+        System.out.println("file reading done, heap sort starts");
         startTime = System.currentTimeMillis();
-        long iterations = bubbleSort(num);
+        long iterations = heapSort(num);
         endTime = System.currentTimeMillis();
-        logger.add("Bubble sort time in miliseconds: " + (endTime - startTime));
-        logger.add("Memory usage after bubble sort: " + (runtime.totalMemory() - runtime.freeMemory()));
+        logger.add("Heap sort time in miliseconds: " + (endTime - startTime));
+        logger.add("Memory usage after heap sort: " + (runtime.totalMemory() - runtime.freeMemory()));
 
-        System.out.println("bubble sort done, writing results");
+        System.out.println("heap sort done, writing results");
         writeResult(num, iterations);
         System.out.println("done!");
     }
