@@ -1,3 +1,5 @@
 .vscode/
 target/
 **/output.txt
+!/executable/*
+**.DS_Store

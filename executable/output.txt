@@ -1,0 +1,44 @@
+--------statistics--------
+Reading input file time in miliseconds: 387
+Memory usage before reading input file into hash table: 2013512 bytes
+Memory usage after reading input file into hash table: 72427448 bytes
+searching value: 522821228 in hash table
+hit!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 2
+searching value: 426088780 in hash table
+hit!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 2
+searching value: 717686692 in hash table
+hit!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 2
+searching value: 652705375 in hash table
+hit!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 2
+searching value: 207855228 in hash table
+hit!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 2
+searching value: 0 in hash table
+miss!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 2
+searching value: 100000000 in hash table
+miss!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 1
+searching value: 300000000 in hash table
+miss!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 1
+searching value: 600000000 in hash table
+miss!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 2
+searching value: 1000000000 in hash table
+miss!
+Hash table value lookup time in miliseconds: 0
+Hash table value lookup access count: 2

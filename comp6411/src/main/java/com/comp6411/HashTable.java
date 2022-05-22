@@ -152,8 +152,8 @@ public class HashTable {
         usedMemoryAfter = runtime.totalMemory() - runtime.freeMemory();
 
         logger.add("Reading input file time in miliseconds: " + (endTime - startTime));
-        logger.add("Memory usage before reading input file into hash table: " + usedMemoryBefore);
-        logger.add("Memory usage after reading input file into hash table: " + usedMemoryAfter);
+        logger.add("Memory usage before reading input file into hash table: " + usedMemoryBefore + " bytes");
+        logger.add("Memory usage after reading input file into hash table: " + usedMemoryAfter + " bytes");
 
         int[] success = new int[] { 522821228, 426088780, 717686692, 652705375, 207855228 };
         boolean result;
