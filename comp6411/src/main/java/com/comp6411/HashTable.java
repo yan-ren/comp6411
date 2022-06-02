@@ -115,9 +115,7 @@ public class HashTable {
 
         try (FileWriter fileWriter = new FileWriter(fout);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-
             bufferedWriter.write("--------statistics--------\n");
-
             for (String str : logger) {
                 bufferedWriter.write(str + "\n");
             }

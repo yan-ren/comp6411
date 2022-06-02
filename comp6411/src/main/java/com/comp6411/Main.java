@@ -8,8 +8,7 @@ public class Main {
         } else {
             path = args[0];
         }
-        // new HeapSort(path).start();
 
-        new HashTable(path).start();
+        new MergeSort(path).start();
     }
 }

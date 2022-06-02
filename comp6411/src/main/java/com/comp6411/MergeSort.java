@@ -1,9 +1,14 @@
 package com.comp6411;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 // A Linked List Node
 class Node {
@@ -13,6 +18,18 @@ class Node {
     Node(int data, Node next) {
         this.data = data;
         this.next = next;
+    }
+}
+
+class Counter {
+    long count;
+
+    Counter() {
+        count = 0L;
+    }
+
+    void increment() {
+        count += 1;
     }
 }
 
@@ -61,7 +78,6 @@ public class MergeSort {
         LinkedList oddUnprime = new LinkedList();
 
         System.out.println("reading file from " + filePath);
-
         usedMemoryBefore = runtime.totalMemory() - runtime.freeMemory();
         startTime = System.currentTimeMillis();
         loadLinkedList(evenPrime, evenUnprime, oddPrime, oddUnprime);
@@ -79,20 +95,118 @@ public class MergeSort {
 
     private void multiThreadingMergeSort(LinkedList evenPrime, LinkedList evenUnprime, LinkedList oddPrime,
             LinkedList oddUnprime) {
-        new Thread(new Runnable() {
+
+        ExecutorService es = Executors.newCachedThreadPool();
+        List<String> localLogger1 = new ArrayList<>();
+        List<String> localLogger2 = new ArrayList<>();
+        List<String> localLogger3 = new ArrayList<>();
+        List<String> localLogger4 = new ArrayList<>();
+        long startTime = 0;
+        long endTime = 0;
+
+        startTime = System.currentTimeMillis();
+        es.execute(new Runnable() {
             @Override
             public void run() {
                 long startTime = 0;
                 long endTime = 0;
-                List<String> localLogger = new ArrayList<>();
+                Counter stackCounter = new Counter();
+
                 System.out.println("Start sorting even prime linked list");
                 startTime = System.currentTimeMillis();
-                evenPrime.head = mergesort(evenPrime.head);
+                evenPrime.head = mergesort(evenPrime.head, stackCounter);
                 endTime = System.currentTimeMillis();
-                localLogger.add("Reading input file and populate four linked lists, time in miliseconds: "
+                localLogger1.add("Sort even prime linked list, time in miliseconds: "
                         + (endTime - startTime));
+                localLogger1.add("Number of mergesort function call: " + stackCounter.count);
             }
-        }).start();
+        });
+
+        es.execute(new Runnable() {
+            @Override
+            public void run() {
+                long startTime = 0;
+                long endTime = 0;
+                Counter stackCounter = new Counter();
+
+                System.out.println("Start sorting even unprime linked list");
+                startTime = System.currentTimeMillis();
+                evenUnprime.head = mergesort(evenUnprime.head, stackCounter);
+                endTime = System.currentTimeMillis();
+                localLogger2.add("Sort even unprime linked list, time in miliseconds: "
+                        + (endTime - startTime));
+                localLogger2.add("Number of mergesort function call: " + stackCounter.count);
+            }
+        });
+
+        es.execute(new Runnable() {
+            @Override
+            public void run() {
+                long startTime = 0;
+                long endTime = 0;
+                Counter stackCounter = new Counter();
+
+                System.out.println("Start sorting odd prime linked list");
+                startTime = System.currentTimeMillis();
+                oddPrime.head = mergesort(oddPrime.head, stackCounter);
+                endTime = System.currentTimeMillis();
+                localLogger3.add("Sort odd prime linked list, time in miliseconds: "
+                        + (endTime - startTime));
+                localLogger3.add("Number of mergesort function call: " + stackCounter.count);
+            }
+        });
+
+        es.execute(new Runnable() {
+            @Override
+            public void run() {
+                long startTime = 0;
+                long endTime = 0;
+                Counter stackCounter = new Counter();
+
+                System.out.println("Start sorting odd unprime linked list");
+                startTime = System.currentTimeMillis();
+                oddUnprime.head = mergesort(oddUnprime.head, stackCounter);
+                endTime = System.currentTimeMillis();
+                localLogger4.add("Sort odd unprime linked list, time in miliseconds: "
+                        + (endTime - startTime));
+                localLogger4.add("Number of mergesort function call: " + stackCounter.count);
+            }
+        });
+
+        es.shutdown();
+        while (!es.isTerminated()) {
+        }
+        endTime = System.currentTimeMillis();
+
+        logger.add("Four merge sort threads finished in " + (endTime - startTime) + " miliseconds");
+        writeResult(logger, localLogger1, evenPrime, "even_prime.output.txt");
+        writeResult(logger, localLogger2, evenUnprime, "even_unprime.output.txt");
+        writeResult(logger, localLogger3, oddPrime, "odd_prime.output.txt");
+        writeResult(logger, localLogger4, oddUnprime, "odd_unprime.output.txt");
+    }
+
+    private void writeResult(List<String> logger, List<String> localLogger, LinkedList list, String fileName) {
+        File fout = new File(fileName);
+
+        try (FileWriter fileWriter = new FileWriter(fout);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+
+            Node current = list.head;
+            while (current != null) {
+                bufferedWriter.write(current.data + ", ");
+                current = current.next;
+            }
+            bufferedWriter.write("\n--------statistics--------\n");
+
+            for (String str : logger) {
+                bufferedWriter.write(str + "\n");
+            }
+            for (String str : localLogger) {
+                bufferedWriter.write(str + "\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadLinkedList(LinkedList evenPrime, LinkedList evenUnprime, LinkedList oddPrime,
@@ -169,7 +283,8 @@ public class MergeSort {
     }
 
     // Sort a given linked list using the merge sort algorithm
-    public static Node mergesort(Node head) {
+    public static Node mergesort(Node head, Counter stackCounter) {
+        stackCounter.increment();
         // base case — length 0 or 1
         if (head == null || head.next == null) {
             return head;
@@ -181,8 +296,8 @@ public class MergeSort {
         Node back = arr[1];
 
         // recursively sort the sublists
-        front = mergesort(front);
-        back = mergesort(back);
+        front = mergesort(front, stackCounter);
+        back = mergesort(back, stackCounter);
 
         // answer = merge the two sorted lists
         return merge(front, back);
