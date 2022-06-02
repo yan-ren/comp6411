@@ -1,0 +1,8 @@
+
+--------statistics--------
+Reading input file and populate four linked lists, time in miliseconds: 1643
+Memory usage before reading input file into hash table: 2013504 bytes
+Memory usage after reading input file into hash table: 50859864 bytes
+Four merge sort threads finished in 339 miliseconds
+Sort even prime linked list, time in miliseconds: 0
+Number of mergesort function call: 1
